@@ -1,6 +1,7 @@
 package il.pacolo.com.mymodules.presentation.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -57,7 +58,10 @@ class MainFragment : Fragment() {
                 binding.textCounter.setTextColor(Color.parseColor("#FF0000"))
             }
             if (number == 0) {
+                binding.textCounter.text = "QR expirado"
+                binding.imgQrCode.setImageResource(R.drawable.anchor_24)
                 binding.textCounter.setTextColor(Color.parseColor("#00FF00"))
+                showPaymentDialog()
                 Toast.makeText(requireContext(), "Time is up!", Toast.LENGTH_SHORT).show()
                 return@Observer
             }
@@ -65,6 +69,10 @@ class MainFragment : Fragment() {
 
         })
         salesViewModel.startCountdown()
+
+        val bitmapImage = salesViewModel.generateQrCode("https://www.google.com/")
+        binding.imgQrCode.setImageBitmap(bitmapImage)
+
 
     }
 
@@ -99,5 +107,20 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Important to avoid memory leaks
+    }
+
+
+    // Dialog
+    private fun showPaymentDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Payment Confirmation")
+            .setMessage("Are you sure you want to proceed with the payment?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

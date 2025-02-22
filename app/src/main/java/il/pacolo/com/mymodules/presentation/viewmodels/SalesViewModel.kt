@@ -1,11 +1,16 @@
 package il.pacolo.com.mymodules.presentation.viewmodels
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.common.BitMatrix
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -111,6 +116,16 @@ class SalesViewModel: ViewModel()  {
         return "Payment Successful"
     }
 
+
+
+    // Generate a QR code
+    fun generateQrCode(text: String): Bitmap {
+        val bitMatrix: BitMatrix = MultiFormatWriter().encode(
+            text, BarcodeFormat.QR_CODE, 200, 200
+        )
+        val barcodeEncoder = BarcodeEncoder()
+        return barcodeEncoder.createBitmap(bitMatrix)
+    }
 
 
 

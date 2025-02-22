@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "il.pacolo.com.mymodules"
-        minSdk = 24
+        minSdk = 22
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -46,6 +46,9 @@ android {
 }
 
 dependencies {
+
+    implementation ("com.google.zxing:core:3.5.2")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
