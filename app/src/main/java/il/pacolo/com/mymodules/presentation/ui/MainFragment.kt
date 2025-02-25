@@ -18,6 +18,7 @@ import il.pacolo.com.mymodules.MainActivity
 import il.pacolo.com.mymodules.R
 import il.pacolo.com.mymodules.databinding.FragmentMainBinding
 import il.pacolo.com.mymodules.presentation.viewmodels.SalesViewModel
+import il.pacolo.com.mymodules.utils.ButtonUtils
 
 class MainFragment : Fragment() {
 
@@ -89,12 +90,10 @@ class MainFragment : Fragment() {
         //Inflate the layout for this fragment
         _binding = FragmentMainBinding.inflate(inflater, container, false)
 
-
-        binding.btnPayment.setOnClickListener {
+        ButtonUtils.onClick(binding.btnPayment) {
             //val intent = Intent(requireContext(), SettingsActivity::class.java)
             //responseLaucher.launch(intent)
 
-            // execute payment
             salesViewModel.initiatePaymentRequests()
         }
 
