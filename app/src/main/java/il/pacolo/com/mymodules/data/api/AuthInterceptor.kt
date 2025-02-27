@@ -1,4 +1,4 @@
-package il.pacolo.com.mymodules.data
+package il.pacolo.com.mymodules.data.api
 
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -13,7 +13,8 @@ class AuthInterceptor(private val authService: AuthService): Interceptor {
         val authToken = runBlocking{
             try {
 
-                authService.getToken().token
+                authService.getAuthToken("client_credentials","320mv13s70d25v0d56k0321r4s",
+                    "894k0ij5ruv0qt9cubivqnk9pc527tlec802j98qf3lal2at2rp","spin-ntpy-closedloop-dev/qr.notification").access_token
 
             }catch(e:Exception){
                 null
@@ -25,7 +26,7 @@ class AuthInterceptor(private val authService: AuthService): Interceptor {
         }
 
         val modifierRequest = originalRequest.newBuilder()
-            .header("Authorization", "Bearer $authToken")
+            .header("Authorization", "$authToken")
             .build()
 
         return chain.proceed(modifierRequest)

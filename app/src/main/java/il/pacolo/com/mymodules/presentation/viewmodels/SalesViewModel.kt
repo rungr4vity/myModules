@@ -7,17 +7,23 @@ import androidx.lifecycle.ViewModel
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import il.pacolo.com.mymodules.data.api.SmartApi
+import il.pacolo.com.mymodules.data.models.PaymentRequest
+import il.pacolo.com.mymodules.data.repository.PaymentRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SalesViewModel: ViewModel()  {
+class SalesViewModel(
+    private val paymentRepository: PaymentRepository = PaymentRepository(SmartApi.instance)
+): ViewModel()  {
 
 
     private val _timeLeft = MutableLiveData<Int>()
@@ -42,21 +48,17 @@ class SalesViewModel: ViewModel()  {
             }
         }
     }
-
     // Resets the countdown to the initial time
     fun initializeCountdown() {
         cancelCountdown()  // Stop existing countdown
         time = 10  // Reset time
         _timeLeft.value = time  // Update UI
     }
-
     // Cancels the countdown
     fun cancelCountdown() {
         handler.removeCallbacks(runnable)  // Stop handler
         isRunning = false  // Mark as stopped
     }
-
-
     // Starts or resumes the countdown
     fun startCountdown() {
 
@@ -66,17 +68,13 @@ class SalesViewModel: ViewModel()  {
             handler.postDelayed(runnable, 1000)  // Start countdown
         }
     }
-
-
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacks(runnable)  // Prevent memory leaks
     }
 
 
-
     // payment
-
     fun initiatePaymentRequests() {
         executionCount = 0
         Log.d("SalesViewModel", "Payment process started...")
@@ -116,8 +114,6 @@ class SalesViewModel: ViewModel()  {
         return "Payment Successful"
     }
 
-
-
     // Generate a QR code
     fun generateQrCode(text: String): Bitmap {
         val bitMatrix: BitMatrix = MultiFormatWriter().encode(
@@ -127,6 +123,20 @@ class SalesViewModel: ViewModel()  {
         return barcodeEncoder.createBitmap(bitMatrix)
     }
 
+
+
+    init {
+        viewModelScope.launch {
+            val response =
+            paymentRepository.payment(PaymentRequest("23a1a6a3-2060-4ef8-be76-42f522024130","250225001001", "502RI", "12789121"))
+
+            if (response.isSuccessful) {
+                val paymentResponse = response.body()
+                Log.d("SalesViewModel", "Payment Response: $paymentResponse")
+            }
+        }
+
+    }
 
 
 
