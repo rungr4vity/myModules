@@ -77,7 +77,7 @@ class SalesViewModel(
     // payment
     fun initiatePaymentRequests() {
         executionCount = 0
-        Log.d("SalesViewModel", "Payment process started...")
+        Log.d("SalesViewModel_payment", "Payment process started...")
         //statusText.text = "Payment process started..."
         scheduleRequests()
     }
@@ -94,7 +94,7 @@ class SalesViewModel(
     private fun executePaymentRequest(requestNumber: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = processPayment() // Simulated API call
+                val response = processPayment(requestNumber) // Simulated API call
                 withContext(Dispatchers.Main) {
                     Log.d("SalesViewModel", "Request $requestNumber: $response")
                     //statusText.text = "Request $requestNumber: $response"
@@ -108,10 +108,42 @@ class SalesViewModel(
         }
     }
 
-    private suspend fun processPayment(): String {
+    private suspend fun processPayment(requestNumber: Int): String {
         delay(1000) // Simulating network delay
-        cancelCountdown()
-        return "Payment Successful"
+
+        var retorna = ""
+        if(requestNumber > 1) {
+            viewModelScope.launch {
+                val response =
+                    paymentRepository.payment(
+                        PaymentRequest(
+                            "e87cdbb2-a245-4da4-b5df-3a452f613dc8",
+                            "250228001078",
+                            "502RI",
+                            "12789121"
+                        )
+                    )
+
+                if (response.isSuccessful) {
+                    val paymentResponse = response.body()
+                    Log.d("SalesViewModel_payment", "Payment Response: $paymentResponse")
+                    Log.d("SalesViewModel_payment", "Payment Successful")
+                    cancelCountdown()
+                    retorna = "Payment Successful"
+                } else {
+                    Log.d("SalesViewModel_payment", "Failed")
+                    retorna = "Payment Failed"
+                }
+            }
+        } else
+        {
+            Log.d("SalesViewModel_payment", "primer intento,no ejecuta el payment")
+        }
+
+
+        return retorna
+
+
     }
 
     // Generate a QR code
@@ -124,17 +156,20 @@ class SalesViewModel(
     }
 
 
+    init {
+        initiatePaymentRequests()
+    }
 
     init {
-        viewModelScope.launch {
-            val response =
-            paymentRepository.payment(PaymentRequest("23a1a6a3-2060-4ef8-be76-42f522024130","250225001001", "502RI", "12789121"))
-
-            if (response.isSuccessful) {
-                val paymentResponse = response.body()
-                Log.d("SalesViewModel", "Payment Response: $paymentResponse")
-            }
-        }
+//        viewModelScope.launch {
+//            val response =
+//            paymentRepository.payment(PaymentRequest("23a1a6a3-2060-4ef8-be76-42f522024130","250225001001", "502RI", "12789121"))
+//
+//            if (response.isSuccessful) {
+//                val paymentResponse = response.body()
+//                Log.d("SalesViewModel", "Payment Response: $paymentResponse")
+//            }
+//        }
 
     }
 
