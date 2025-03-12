@@ -4,7 +4,14 @@ import android.icu.text.ListFormatter.Width
 
 
 fun main() {
-    
+
+    val c = Shape.Circle(5.0)
+    println(calculateArea(c)) // Output: 78.54 (approximately)
+
+    val r = Shape.Rectangle(4.0, 6.0)
+    println(calculateArea(r)) // Output: 24.0
+
+    print(evenNumbers(listOf(3, 7, 2, 4, 6)))
 }
 
 
@@ -32,3 +39,13 @@ fun calculateArea(shape:Shape): Double {
         is Shape.Rectangle ->  shape.lenght * shape.width
     }
 }
+
+
+//Task: Given a list of integers, write a function that returns only the even numbers, squared, and sorted in descending order.
+fun evenNumbers(list:List<Int>): List<Int>  =  list.filter { it % 2 == 0 }.map{it*it}.sortedDescending()
+
+
+
+
+
+
