@@ -71,8 +71,7 @@ class MainFragment : Fragment() {
         })
         salesViewModel.startCountdown()
 
-        val bitmapImage = salesViewModel.generateQrCode("https://www.google.com/")
-        binding.imgQrCode.setImageBitmap(bitmapImage)
+
 
 
     }

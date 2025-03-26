@@ -8,10 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.common.BitMatrix
-import com.journeyapps.barcodescanner.BarcodeEncoder
+
 import il.pacolo.com.mymodules.data.api.SmartApi
 import il.pacolo.com.mymodules.data.models.PaymentRequest
 import il.pacolo.com.mymodules.data.repository.PaymentRepository
@@ -146,14 +143,6 @@ class SalesViewModel(
 
     }
 
-    // Generate a QR code
-    fun generateQrCode(text: String): Bitmap {
-        val bitMatrix: BitMatrix = MultiFormatWriter().encode(
-            text, BarcodeFormat.QR_CODE, 200, 200
-        )
-        val barcodeEncoder = BarcodeEncoder()
-        return barcodeEncoder.createBitmap(bitMatrix)
-    }
 
 
     init {
